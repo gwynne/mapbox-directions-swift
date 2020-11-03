@@ -19,7 +19,7 @@ open class RouteLeg: Codable {
         case typicalTravelTime = "duration_typical"
         case profileIdentifier
         case annotation
-        case administrationRegions = "admins"
+        case administrativeRegions = "admins"
         case incidents
     }
     
@@ -76,8 +76,16 @@ open class RouteLeg: Codable {
             self.attributes = attributes
         }
 
-        if let admins = try container.decodeIfPresent([AdministrationRegion].self, forKey: .administrationRegions) {
-            self.administrationRegions = admins
+        
+        if let admins = try container.decodeIfPresent([AdministrativeRegion].self, forKey: .administrativeRegions) {
+            self.administrativeRegions = admins
+            steps.forEach { step in
+                guard let intersections = step.intersections, let adminIndicies = step.administrativeRegionIndicesByIntersection else { return }
+                for (i, var intersection) in intersections.enumerated() {
+                    guard let administrationIndex = adminIndicies[i] else { return }
+                    intersection.regionCode = administrativeRegions![administrationIndex].countryCode
+                }
+            }
         }
 
         if let incidents = try container.decodeIfPresent([Incident].self, forKey: .incidents) {
@@ -101,8 +109,8 @@ open class RouteLeg: Codable {
             try container.encode(attributes, forKey: .annotation)
         }
 
-        if let admins = administrationRegions {
-            try container.encode(admins, forKey: .administrationRegions)
+        if let admins = administrativeRegions {
+            try container.encode(admins, forKey: .administrativeRegions)
         }
 
         if let incidents = incidents {
@@ -274,7 +282,7 @@ open class RouteLeg: Codable {
      */
     open var expectedTravelTime: TimeInterval
 
-    open var administrationRegions: [AdministrationRegion]?
+    open var administrativeRegions: [AdministrativeRegion]?
 
     open var incidents: [Incident]?
     
