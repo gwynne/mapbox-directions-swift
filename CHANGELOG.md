@@ -3,6 +3,7 @@
 ## 1.2.0
 
 * Added the `DirectionsResult.typicalTravelTime`, `RouteLeg.typicalTravelTime` and `RouteStep.typicalTravelTime` properties that indicate the typical travel time, as opposed to the current expected travel time. ([#462](https://github.com/mapbox/mapbox-directions-swift/pull/462))
+* Added `Intersection.regionCode` and `RouteStep.administrativeRegionIndicesByIntersection` for more convenient region data usage. `Intersection.administrativeRegionIndex` is now internal. ([#485](https://github.com/mapbox/mapbox-directions-swift/pull/485))
 
 ## 1.0.0
 
